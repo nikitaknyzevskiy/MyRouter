@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/menu_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="основна інформація про роутер"
+        android:tag="1"/>
+
+    <Button
+        android:id="@+id/menu_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="еревірка підключення кабелю"
+        android:tag="2"/>
+
+    <Button
+        android:id="@+id/menu_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="перевірка швидкості підключення"
+        android:tag="3"/>
+
+    <Button
+        android:id="@+id/menu_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="перевірка довжини/пошкодження кабелю"
+        android:tag="4"/>
+
+    <Button
+        android:id="@+id/menu_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="основна інформація про підключення (ір адреса, шлюз, DNS)"
+        android:tag="5"/>
+
+    <Button
+        android:id="@+id/menu_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="перевірка наявності інтернету на роутер"
+        android:tag="6"/>
+
+    <Button
+        android:id="@+id/menu_7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="еревірка швидкості інтернет (завантаження) з сервером"
+        android:tag="7"/>
+
+    <Button
+        android:id="@+id/menu_8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="перевірка швидкості інтернет (відвантаження) з сервером"
+        android:tag="8"/>
+
+</LinearLayout>
