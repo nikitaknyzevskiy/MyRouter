@@ -40,11 +40,12 @@ class LoginFragment : Fragment() {
                 login_password.text.toString(),
                 login_port.text.toString().toInt()
             ).observe(this.viewLifecycleOwner, Observer {
-                login_pb.visibility = View.GONE
-                login_btn.visibility = View.VISIBLE
 
-                if (it) {
-                    findNavController().navigate(R.id.action_loginFragment_to_menuFragment)
+                if (it)
+                    findNavController().popBackStack()
+                else {
+                    login_pb.visibility = View.GONE
+                    login_btn.visibility = View.VISIBLE
                 }
 
             })
