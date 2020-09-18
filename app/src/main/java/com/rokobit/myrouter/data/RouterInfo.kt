@@ -28,24 +28,18 @@ data class DownloadSpeedInfo(
     val rxCurrent: String,
     val rxTenSecondAverage: String,
     val rxTotalAverage: String,
-    val lostPackets: String,
-    val randomData: String,
     val direction: String,
-    val rxSize: String,
-    val connectionCount: String,
-    val localCpuLoad: String,
-    val remoteCpuLoad: String
+    val rxSize: String
 )
 
 data class UploadSpeedInfo(
     val status: String,
+    val duration: String,
     val txCurrent: String,
     val txTenSecondAverage: String,
     val txTotalAverage: String,
-    val randomData: String,
     val direction: String,
-    val txSize: String,
-    val connectionCount: String
+    val txSize: String
 )
 
 data class RouterInfo(
@@ -54,8 +48,6 @@ data class RouterInfo(
     val speed: String,
     val dnsInfo: String,
     val ether1State: String,
-    var downloadSpeedInfo: MutableLiveData<String?> = MutableLiveData(),
-    var uploadSpeedInfo: MutableLiveData<String?> = MutableLiveData(),
     var isEther1CableRun: Boolean? = null
 )
 
@@ -107,26 +99,21 @@ object RouterInfoUtil {
 
         val nList = data.split("\n")
 
-        val split = nList.map {
+        /*val split = nList.map {
             if (it.isNotEmpty() && it.contains(":"))
                 it.substring(it.indexOf(':') + 1).trim().replace("\r", "")
             else
                 it
-        }
+        }*/
 
         return DownloadSpeedInfo(
-            status = split[0],
-            duration = split[1],
-            rxCurrent = split[2],
-            rxTenSecondAverage = split[3],
-            rxTotalAverage = split[4],
-            lostPackets = split[5],
-            randomData = if (split.size > 6) split[6] else "no info",
-            direction = if (split.size > 10) split[7] else "no info",
-            rxSize = if (split.size > 8) split[8] else "no info",
-            connectionCount = if (split.size > 9) split[9] else "no info",
-            localCpuLoad = if (split.size > 10) split[10] else "no info",
-            remoteCpuLoad = if (split.size > 11) split[11] else "no info"
+            status = nList.find { it.contains("status:") }?.replace("status:","")?:"",
+            duration = nList.find { it.contains("duration:") }?.replace("duration::","")?:"",
+            rxCurrent = nList.find { it.contains("rx-current:") }?.replace("rx-current:","")?:"",
+            rxTenSecondAverage = nList.find { it.contains("rx-10-second-average:") }?.replace("rx-10-second-average:","")?:"",
+            rxTotalAverage = nList.find { it.contains("rx-total-average:") }?.replace("rx-total-average:","")?:"",
+            direction = nList.find { it.contains("direction:") }?.replace("direction:","")?:"",
+            rxSize = nList.find { it.contains("rx-size:") }?.replace("rx-size:","")?:""
         )
     }
 
@@ -142,54 +129,14 @@ object RouterInfoUtil {
 
         val nList = data.split("\n")
 
-        val split = nList.map {
-            if (it.isNotEmpty() && it.contains(":"))
-                it.substring(it.indexOf(':') + 1).trim().replace("\r", "")
-            else
-                it
-        }
-
         return UploadSpeedInfo(
-            status = split[0],
-            txCurrent = split[1],
-            txTenSecondAverage = split[2],
-            txTotalAverage = split[3],
-            randomData = split[4],
-            direction = split[5],
-            txSize = split[6],
-            connectionCount = split[7]
-        )
-    }
-
-    fun convertToDownloadSpeedInfo(data: DownloadSpeedInfo): String {
-        val str = "status: %s\n" +
-                "duration: %s\n" +
-                "rx-current: %s\n" +
-                "rx-10-second-average: %s\n" +
-                "rx-total-average: %s\n" +
-                "lost-packets: %s\n" +
-                "random-data: %s\n" +
-                "direction: %s\n" +
-                "rx-size: %s\n" +
-                "connection-count: %s\n" +
-                "local-cpu-load: %s\n" +
-                "remote-cpu-load: %s"
-
-
-        return String.format(
-            str,
-            data.status,
-            data.duration,
-            data.rxCurrent,
-            data.rxTenSecondAverage,
-            data.rxTotalAverage,
-            data.lostPackets,
-            data.randomData,
-            data.direction,
-            data.rxSize,
-            data.connectionCount,
-            data.localCpuLoad,
-            data.remoteCpuLoad
+            status = nList.find { it.contains("status:") }?.replace("status:", "")?:"",
+            txCurrent = nList.find { it.contains("tx-current:") }?.replace("tx-current:", "")?:"",
+            txTenSecondAverage = nList.find { it.contains("tx-10-second-average:") }?.replace("tx-10-second-average:", "")?:"",
+            txTotalAverage = nList.find { it.contains("tx-total-average:") }?.replace("tx-total-average:", "")?:"",
+            direction = nList.find { it.contains("direction:") }?.replace("direction:", "")?:"",
+            txSize = nList.find { it.contains("tx-size:") }?.replace("tx-size:", "")?:"",
+            duration = nList.find { it.contains("duration:") }?.replace("duration:", "")?:""
         )
     }
 

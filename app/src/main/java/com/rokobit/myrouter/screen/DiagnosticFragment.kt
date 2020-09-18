@@ -1,9 +1,11 @@
 package com.rokobit.myrouter.screen
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -33,7 +35,15 @@ class DiagnosticFragment : Fragment(), Observer<RouterInfo> {
         mViewModel.startDiagnostic()
 
         diagnostic_test_speed_btn.setOnClickListener {
-            findNavController().navigate(R.id.action_diagnosticFragment_to_speedInfoFragment)
+            findNavController().navigate(R.id.action_diagnosticFragment_to_speedInfoFragment, Bundle().apply {
+                putBoolean("isDownload", true)
+            })
+        }
+
+        diagnostic_test_speed_btn2.setOnClickListener {
+            findNavController().navigate(R.id.action_diagnosticFragment_to_speedInfoFragment, Bundle().apply {
+                putBoolean("isDownload", false)
+            })
         }
     }
 
@@ -50,26 +60,26 @@ class DiagnosticFragment : Fragment(), Observer<RouterInfo> {
     override fun onChanged(info: RouterInfo) {
         diagnostic_gen_pb.visibility = View.INVISIBLE
 
-        diagnostic_routerboard.text = info.deviceInfo.routerBoard
+        //diagnostic_routerboard.text = info.deviceInfo.routerBoard
         diagnostic_board_name.text = info.deviceInfo.boardName
-        diagnostic_model.text = info.deviceInfo.model
-        diagnostic_serial_number.text = info.deviceInfo.serialNumber
-        diagnostic_firmware_type.text = info.deviceInfo.firmwareType
+        //diagnostic_model.text = info.deviceInfo.model
+        //diagnostic_serial_number.text = info.deviceInfo.serialNumber
+        //diagnostic_firmware_type.text = info.deviceInfo.firmwareType
         diagnostic_current_firmware.text = info.deviceInfo.currentFirmware
-        diagnostic_upgrade_firmware.text = info.deviceInfo.upgradeFirmware
+        //diagnostic_upgrade_firmware.text = info.deviceInfo.upgradeFirmware
 
         diagnostic_is_ether1_run.text = info.isEther1Run.toString()
 
         diagnostic_is_ether1_speed.text = info.speed
 
-        diagnostic_is_ether1_dns.text = info.dnsInfo
+        diagnostic_is_ether1_dns.text = Html.fromHtml(info.dnsInfo, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         diagnostic_is_ether1_state.text = info.ether1State
 
         diagnostic_is_ether1_cable_run.text = info.isEther1CableRun.toString()
 
-        if (info.ether1State == "internet")
-            diagnostic_test_speed_btn.visibility = View.VISIBLE
+        diagnostic_test_speed_btn.visibility = View.VISIBLE
+        diagnostic_test_speed_btn2.visibility = View.VISIBLE
     }
 
 }
