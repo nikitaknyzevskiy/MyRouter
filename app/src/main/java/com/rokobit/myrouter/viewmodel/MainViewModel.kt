@@ -14,9 +14,14 @@ import com.rokobit.myrouter.data.DownloadSpeedInfo
 import com.rokobit.myrouter.data.RouterInfo
 import com.rokobit.myrouter.data.RouterInfoUtil
 import com.rokobit.myrouter.data.UploadSpeedInfo
+import com.rokobit.myrouter.viewmodel.MainViewModelUtil.commandList
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.util.*
+
+object MainViewModelUtil {
+    val commandList = arrayListOf<String>()
+}
 
 class MainViewModel : ViewModel() {
 
@@ -108,11 +113,13 @@ class MainViewModel : ViewModel() {
 
     fun unsubscribeSpeedTest() = GlobalScope.launch(Dispatchers.IO + handler) {
         canStreamSpeedInfo = false
-        doCommand("q")
+        sshChannel?.disconnect()
     }
 
+    @Synchronized
     private suspend fun doCommand(command: String): String {
         val outputStream = ByteArrayOutputStream()
+        Log.d("MainViewModel", "onCommand $command")
 
         // Create SSH Channel.
         sshChannel = session?.openChannel("exec") as ChannelExec
@@ -123,6 +130,8 @@ class MainViewModel : ViewModel() {
 
         while (outputStream.size() == 0)
             delay(100)
+
+        Log.d("MainViewModel", "command result ${outputStream.toString()}")
 
         return outputStream.toString()
     }
@@ -173,6 +182,10 @@ class MainViewModel : ViewModel() {
 
         sshChannel?.setCommand("/tool bandwidth-test address=81.25.234.40 direction=receive")
         sshChannel?.connect()
+
+        if (!canStreamSpeedInfo) {
+            doCommand("Q")
+        }
 
         while (canStreamSpeedInfo) {
             if (stream.size() > 0) {
