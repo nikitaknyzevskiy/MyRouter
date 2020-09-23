@@ -22,6 +22,13 @@ data class DeviceInfo(
     val upgradeFirmware: String
 )
 
+data class IpInfo(
+    val address: String,
+    val gateway: String,
+    val dns1: String,
+    val dns2: String
+)
+
 data class DownloadSpeedInfo(
     val status: String,
     val duration: String,
@@ -66,7 +73,7 @@ object RouterInfoUtil {
 
         val split = nList.map {
             if (it.isNotEmpty() && it.contains(":"))
-                it.substring(it.indexOf(':') + 1).trim().replace("\r", "")
+                it.substring(it.indexOf(':') + 1).trim().replace("\r", "").replace("\n", "")
             else
                 it
         }
@@ -137,6 +144,15 @@ object RouterInfoUtil {
             direction = nList.find { it.contains("direction:") }?.replace("direction:", "")?:"",
             txSize = nList.find { it.contains("tx-size:") }?.replace("tx-size:", "")?:"",
             duration = nList.find { it.contains("duration:") }?.replace("duration:", "")?:""
+        )
+    }
+
+    fun convertToIpInfo(data: String): IpInfo {
+        return IpInfo(
+            address = data.substring(data.indexOf("address=") + "address=".length,  data.indexOf(" gateway")).replace("\n", ""),
+            gateway = data.substring(data.indexOf("gateway=") + "gateway=".length,  data.indexOf(" dhcp-server")).replace("\n", ""),
+            dns1 = data.substring(data.indexOf("primary-dns=") + "primary-dns=".length, data.indexOf("primary-dns=") + 7 + "primary-dns=".length).replace("\n", ""),
+            dns2 = data.substring(data.indexOf("secondary-dns=") + "secondary-dns=".length, data.indexOf("secondary-dns=") + 7 + "secondary-dns=".length).replace("\n", "")
         )
     }
 
