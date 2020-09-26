@@ -71,4 +71,7 @@ dependencies {
 
     //SSH
     implementation 'com.jcraft:jsch:0.1.54'
+
+    //UI
+    implementation 'com.github.anastr:speedviewlib:1.5.3'
 }

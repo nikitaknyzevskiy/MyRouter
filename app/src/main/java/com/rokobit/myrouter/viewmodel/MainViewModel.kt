@@ -59,12 +59,12 @@ class MainViewModel : ViewModel() {
         )
     }
 
-    private var canStreamSpeedInfo = false
-
     val downloadSpeedInfoLiveData = MutableLiveData<DownloadSpeedInfo>()
-    val uploadSpeedInfoLiveData = MutableLiveData<UploadSpeedInfo>()
+    private val uploadSpeedInfoLiveData = MutableLiveData<UploadSpeedInfo>()
 
     private var session: Session? = null
+
+    private var speedSshChanel: ChannelExec? = null
 
     fun login(serverIP: String, login: String, password: String, port: Int) =
         liveData(Dispatchers.IO) {
@@ -100,20 +100,6 @@ class MainViewModel : ViewModel() {
         emit(result)
     }
 
-    fun subscribeSpeedTest(isDownload: Boolean) = GlobalScope.launch(Dispatchers.IO + handler) {
-        canStreamSpeedInfo = true
-
-        if (isDownload)
-            downloadInfo()
-        else
-            uploadInfo()
-    }
-
-    fun unsubscribeSpeedTest() = GlobalScope.launch(Dispatchers.IO + handler) {
-        canStreamSpeedInfo = false
-        //sshChannel?.disconnect()
-    }
-
     @Synchronized
     private suspend fun doCommand(command: String): String {
         val outputStream = ByteArrayOutputStream()
@@ -136,30 +122,44 @@ class MainViewModel : ViewModel() {
         return outputStream.toString()
     }
 
-    private suspend fun downloadInfo() {
+    private var isSpeedRun = false
+
+    fun startSpeedTest(isDownload: Boolean) = GlobalScope.launch(Dispatchers.IO) {
         val stream = ByteArrayOutputStream()
 
+        isSpeedRun = true
+
         // Create SSH Channel.
-        val sshChannel = session?.openChannel("exec") as ChannelExec
-        sshChannel?.outputStream = stream
+        speedSshChanel?.disconnect()
+        speedSshChanel = session?.openChannel("exec") as ChannelExec
+        speedSshChanel?.outputStream = stream
 
-        sshChannel?.setCommand("/tool bandwidth-test address=81.25.234.40 direction=receive")
-        sshChannel?.connect()
+        speedSshChanel?.setCommand("/tool bandwidth-test address=81.25.234.40 direction=" + if (isDownload) "receive" else "transmit")
+        speedSshChanel?.connect()
 
-        if (!canStreamSpeedInfo) {
-            doCommand("Q")
-        }
-
-        while (canStreamSpeedInfo) {
-            if (stream.size() > 0) {
-                downloadSpeedInfoLiveData.postValue(RouterInfoUtil.convertToDownloadSpeedInfo(stream.toString()))
-                stream.reset()
-            }
+        while (isSpeedRun) {
+            if (stream.size() == 0)
+                continue
             delay(100)
+            downloadSpeedInfoLiveData.postValue(
+                RouterInfoUtil.convertToDownloadSpeedInfo(stream.toString())
+            )
+            stream.reset()
         }
     }
 
-    private suspend fun uploadInfo() {
+    fun stopSpeedViaQ() = GlobalScope.launch(Dispatchers.IO) {
+        isSpeedRun = false
+        speedSshChanel?.setCommand("Q")
+        speedSshChanel?.connect()
+    }
+
+    fun stopSpeedViaClose() = GlobalScope.launch(Dispatchers.IO) {
+        isSpeedRun = false
+        speedSshChanel?.disconnect()
+    }
+
+    /*private suspend fun uploadInfo() {
         val stream = ByteArrayOutputStream()
 
         // Create SSH Channel.
@@ -176,5 +176,5 @@ class MainViewModel : ViewModel() {
             }
             delay(100)
         }
-    }
+    }*/
 }

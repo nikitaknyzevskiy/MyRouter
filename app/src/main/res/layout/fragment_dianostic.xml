@@ -602,7 +602,8 @@
                 android:visibility="gone"
                 app:icon="@drawable/ic_baseline_arrow_downward_24"
                 app:iconPadding="0dp"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                app:goneUnless="@{ipInfo != null}"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/diagnostic_test_speed_btn2"

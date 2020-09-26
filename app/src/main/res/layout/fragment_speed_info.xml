@@ -6,6 +6,24 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/speedinfo_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.github.anastr.speedviewlib.PointerSpeedometer
+        android:id="@+id/speedinfo_pointerSpeedometer"
+        android:layout_width="223dp"
+        android:layout_height="196dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
         android:id="@+id/speedinfo_download_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

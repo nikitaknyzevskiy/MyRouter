@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.rokobit.myrouter.R
 import com.rokobit.myrouter.data.DownloadSpeedInfo
+import com.rokobit.myrouter.data.RouterInfoUtil
 import com.rokobit.myrouter.data.UploadSpeedInfo
 import com.rokobit.myrouter.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_speed_info.*
+import java.io.ByteArrayOutputStream
 
 class SpeedInfoFragment : Fragment() {
 
@@ -40,21 +43,18 @@ class SpeedInfoFragment : Fragment() {
             speedinfo_download_title.visibility = View.GONE
             speedinfo_download.visibility = View.GONE
         }
-
     }
 
     override fun onStart() {
         super.onStart()
-        mViewModel.subscribeSpeedTest(arguments?.getBoolean("isDownload")?:false)
         mViewModel.downloadSpeedInfoLiveData.observe(this.viewLifecycleOwner, downObs)
-        mViewModel.uploadSpeedInfoLiveData.observe(this.viewLifecycleOwner, uplObs)
+
+        mViewModel.startSpeedTest(arguments?.getBoolean("isDownload")?:false)
     }
 
     override fun onStop() {
         super.onStop()
-        mViewModel.unsubscribeSpeedTest()
-        mViewModel.downloadSpeedInfoLiveData.removeObserver(downObs)
-        mViewModel.uploadSpeedInfoLiveData.removeObserver(uplObs)
+        mViewModel.stopSpeedViaClose()
     }
 
     private val downObs = Observer<DownloadSpeedInfo> {
@@ -74,6 +74,8 @@ class SpeedInfoFragment : Fragment() {
         data.append("<b>rxSize:</b> ${it.rxSize}")
         data.append("<p>")
         speedinfo_download.text = Html.fromHtml(data.toString(), FROM_HTML_MODE_COMPACT)
+
+        speedinfo_pointerSpeedometer.speedTo(it.rxTenSecondAverage.filter { it.isDigit() }.toFloat())
     }
 
     private val uplObs = Observer<UploadSpeedInfo> {
