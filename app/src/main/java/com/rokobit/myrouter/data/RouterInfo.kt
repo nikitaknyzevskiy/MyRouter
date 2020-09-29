@@ -36,7 +36,9 @@ data class DownloadSpeedInfo(
     val rxTenSecondAverage: String,
     val rxTotalAverage: String,
     val direction: String,
-    val rxSize: String
+    val rxSize: String,
+    val localCpu: String,
+    val remoteCpu: String
 )
 
 data class UploadSpeedInfo(
@@ -46,7 +48,9 @@ data class UploadSpeedInfo(
     val txTenSecondAverage: String,
     val txTotalAverage: String,
     val direction: String,
-    val txSize: String
+    val txSize: String,
+    val localCpu: String,
+    val remoteCpu: String
 )
 
 data class RouterInfo(
@@ -105,6 +109,7 @@ object RouterInfoUtil {
                 "       remote-cpu-load: 8%"
 
         val nList = data.split("\n")
+        nList.forEach { it.replace("\\s".toRegex(), "") }
 
         /*val split = nList.map {
             if (it.isNotEmpty() && it.contains(":"))
@@ -114,13 +119,15 @@ object RouterInfoUtil {
         }*/
 
         return DownloadSpeedInfo(
-            status = nList.find { it.contains("status:") }?.replace("status:","")?:"",
-            duration = nList.find { it.contains("duration:") }?.replace("duration::","")?:"",
+            status = nList.find { it.contains("status:") }?.replace("status:","")?:"".replace("\\s".toRegex(), ""),
+            duration = nList.find { it.contains("duration:") }?.replace("duration:","")?:"".replace("\\s".toRegex(), ""),
             rxCurrent = nList.find { it.contains("rx-current:") }?.replace("rx-current:","")?:"",
-            rxTenSecondAverage = nList.find { it.contains("rx-10-second-average:") }?.replace("rx-10-second-average:","")?:"",
-            rxTotalAverage = nList.find { it.contains("rx-total-average:") }?.replace("rx-total-average:","")?:"",
-            direction = nList.find { it.contains("direction:") }?.replace("direction:","")?:"",
-            rxSize = nList.find { it.contains("rx-size:") }?.replace("rx-size:","")?:""
+            rxTenSecondAverage = nList.find { it.contains("rx-10-second-average:") }?.replace("rx-10-second-average:","")?:"".replace("\\s".toRegex(), ""),
+            rxTotalAverage = nList.find { it.contains("rx-total-average:") }?.replace("rx-total-average:","")?:"".replace("\\s".toRegex(), ""),
+            direction = nList.find { it.contains("direction:") }?.replace("direction:","")?:"".replace("\\s".toRegex(), ""),
+            rxSize = nList.find { it.contains("rx-size:") }?.replace("rx-size:","")?:"".replace("\\s".toRegex(), ""),
+            localCpu = nList.find { it.contains("local-cpu-load:") }?.replace("local-cpu-load:","")?:"".replace("\\s".toRegex(), ""),
+            remoteCpu = nList.find { it.contains("remote-cpu-load:") }?.replace("remote-cpu-load:","")?:"".replace("\\s".toRegex(), "")
         )
     }
 
@@ -143,7 +150,9 @@ object RouterInfoUtil {
             txTotalAverage = nList.find { it.contains("tx-total-average:") }?.replace("tx-total-average:", "")?:"",
             direction = nList.find { it.contains("direction:") }?.replace("direction:", "")?:"",
             txSize = nList.find { it.contains("tx-size:") }?.replace("tx-size:", "")?:"",
-            duration = nList.find { it.contains("duration:") }?.replace("duration:", "")?:""
+            duration = nList.find { it.contains("duration:") }?.replace("duration:", "")?:"",
+            localCpu = nList.find { it.contains("local-cpu-load:") }?.replace("local-cpu-load:","")?:"",
+            remoteCpu = nList.find { it.contains("remote-cpu-load:") }?.replace("remote-cpu-load:","")?:""
         )
     }
 

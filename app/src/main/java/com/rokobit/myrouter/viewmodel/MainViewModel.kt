@@ -60,7 +60,7 @@ class MainViewModel : ViewModel() {
     }
 
     val downloadSpeedInfoLiveData = MutableLiveData<DownloadSpeedInfo>()
-    private val uploadSpeedInfoLiveData = MutableLiveData<UploadSpeedInfo>()
+    val uploadSpeedInfoLiveData = MutableLiveData<UploadSpeedInfo>()
 
     private var session: Session? = null
 
@@ -141,9 +141,16 @@ class MainViewModel : ViewModel() {
             if (stream.size() == 0)
                 continue
             delay(100)
-            downloadSpeedInfoLiveData.postValue(
-                RouterInfoUtil.convertToDownloadSpeedInfo(stream.toString())
-            )
+
+            if (isDownload)
+                downloadSpeedInfoLiveData.postValue(
+                    RouterInfoUtil.convertToDownloadSpeedInfo(stream.toString())
+                )
+            else
+                uploadSpeedInfoLiveData.postValue(
+                    RouterInfoUtil.convertToUploadSpeedInfo(stream.toString())
+                )
+
             stream.reset()
         }
     }

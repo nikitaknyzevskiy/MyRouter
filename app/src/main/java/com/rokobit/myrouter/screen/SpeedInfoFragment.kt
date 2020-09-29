@@ -36,18 +36,17 @@ class SpeedInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (arguments?.getBoolean("isDownload") == true) {
-            speedinfo_upload_title.visibility = View.GONE
-            speedinfo_upload.visibility = View.GONE
+            speedinfo_title.text = "Download"
         }
         else {
-            speedinfo_download_title.visibility = View.GONE
-            speedinfo_download.visibility = View.GONE
+            speedinfo_title.text = "Upload"
         }
     }
 
     override fun onStart() {
         super.onStart()
         mViewModel.downloadSpeedInfoLiveData.observe(this.viewLifecycleOwner, downObs)
+        mViewModel.uploadSpeedInfoLiveData.observe(this.viewLifecycleOwner, uplObs)
 
         mViewModel.startSpeedTest(arguments?.getBoolean("isDownload")?:false)
     }
@@ -58,43 +57,39 @@ class SpeedInfoFragment : Fragment() {
     }
 
     private val downObs = Observer<DownloadSpeedInfo> {
-        val data = StringBuilder()
-        data.append("<b>status:</b> ${it.status}")
-        data.append("<p>")
-        data.append("<b>duration:</b> ${it.duration}")
-        data.append("<p>")
-        data.append("<b>rxCurrent:</b> ${it.rxCurrent}")
-        data.append("<p>")
-        data.append("<b>rxTenSecondAverage:</b> ${it.rxTenSecondAverage}")
-        data.append("<p>")
-        data.append("<b>rxTotalAverage:</b> ${it.rxTotalAverage}")
-        data.append("<p>")
-        data.append("<b>direction:</b> ${it.direction}")
-        data.append("<p>")
-        data.append("<b>rxSize:</b> ${it.rxSize}")
-        data.append("<p>")
-        speedinfo_download.text = Html.fromHtml(data.toString(), FROM_HTML_MODE_COMPACT)
+        speed_average.text = it.rxTotalAverage
+        speed_duraction.text = it.duration
+        speed_local_cpu.text = it.localCpu
+        speed_remote_cpu.text = it.remoteCpu
 
-        speedinfo_pointerSpeedometer.speedTo(it.rxTenSecondAverage.filter { it.isDigit() }.toFloat())
+        if (it.rxTotalAverage.isNotEmpty()) {
+            var speed = ""
+            it.rxTotalAverage.forEach {
+                if (it.isDigit() || it == '.')
+                    speed+=it
+            }
+            speed_progress.progress = speed.toFloat()
+
+            speed_speed.text = "$speed Mbps"
+        }
     }
 
     private val uplObs = Observer<UploadSpeedInfo> {
-        val data = StringBuilder()
-        data.append("<b>status:</b> ${it.status}")
-        data.append("<p>")
-        data.append("<b>duration:</b> ${it.duration}")
-        data.append("<p>")
-        data.append("<b>txCurrent:</b> ${it.txCurrent}")
-        data.append("<p>")
-        data.append("<b>txTenSecondAverage:</b> ${it.txTenSecondAverage}")
-        data.append("<p>")
-        data.append("<b>txTotalAverage:</b> ${it.txTotalAverage}")
-        data.append("<p>")
-        data.append("<b>direction:</b> ${it.direction}")
-        data.append("<p>")
-        data.append("<b>txSize:</b> ${it.txSize}")
-        data.append("<p>")
-        speedinfo_upload.text = Html.fromHtml(data.toString(), FROM_HTML_MODE_COMPACT)
+        speed_average.text = it.txTotalAverage
+        speed_duraction.text = it.duration
+        speed_local_cpu.text = it.localCpu
+        speed_remote_cpu.text = it.remoteCpu
+
+        if (it.txTotalAverage.isNotEmpty()) {
+            var speed = ""
+            it.txTotalAverage.forEach {
+                if (it.isDigit() || it == '.')
+                    speed+=it
+            }
+            speed_progress.progress = speed.toFloat()
+
+            speed_speed.text = "$speed Mbps"
+        }
     }
 
 
