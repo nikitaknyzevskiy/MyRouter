@@ -21,7 +21,7 @@ class OvalProgressBar @JvmOverloads constructor(
             postInvalidate()
         }
 
-    var maxProgress: Float = 1000f
+    var maxProgress: Float = 100f
 
     private val padding = 25f
 

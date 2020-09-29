@@ -1,5 +1,6 @@
 package com.rokobit.myrouter.screen
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -56,41 +57,44 @@ class SpeedInfoFragment : Fragment() {
         mViewModel.stopSpeedViaClose()
     }
 
+    @SuppressLint("SetTextI18n")
     private val downObs = Observer<DownloadSpeedInfo> {
-        speed_average.text = it.rxTotalAverage
-        speed_duraction.text = it.duration
-        speed_local_cpu.text = it.localCpu
-        speed_remote_cpu.text = it.remoteCpu
+        speed_duraction.text = "${it.duration.toNumber()} s"
+        speed_local_cpu.text = "${it.localCpu.toNumber()}%"
+        speed_remote_cpu.text = "${it.remoteCpu.toNumber()}%"
 
-        if (it.rxTotalAverage.isNotEmpty()) {
-            var speed = ""
-            it.rxTotalAverage.forEach {
-                if (it.isDigit() || it == '.')
-                    speed+=it
-            }
-            speed_progress.progress = speed.toFloat()
+        val speed = it.rxTotalAverage.toNumber()
 
-            speed_speed.text = "$speed Mbps"
-        }
+        speed_speed.text = "$speed Mbps"
+        speed_average.text = "$speed Mbps"
+        speed_progress.progress = speed
     }
 
     private val uplObs = Observer<UploadSpeedInfo> {
-        speed_average.text = it.txTotalAverage
-        speed_duraction.text = it.duration
-        speed_local_cpu.text = it.localCpu
-        speed_remote_cpu.text = it.remoteCpu
+        speed_duraction.text = "${it.duration.toNumber()} s"
+        speed_local_cpu.text = "${it.localCpu.toNumber()}%"
+        speed_remote_cpu.text = "${it.remoteCpu.toNumber()}%"
 
-        if (it.txTotalAverage.isNotEmpty()) {
-            var speed = ""
-            it.txTotalAverage.forEach {
-                if (it.isDigit() || it == '.')
-                    speed+=it
-            }
-            speed_progress.progress = speed.toFloat()
+        val speed = it.txTotalAverage.toNumber()
 
-            speed_speed.text = "$speed Mbps"
-        }
+        speed_speed.text = "$speed Mbps"
+        speed_average.text = "$speed Mbps"
+        speed_progress.progress = speed
     }
 
 
+}
+
+fun String.toNumber(): Float {
+    if (this.isEmpty())
+        return 0f
+
+    var num = ""
+
+    this.forEach {
+        if (it.isDigit() || it == '.')
+            num+=it
+    }
+
+    return num.toFloat()
 }

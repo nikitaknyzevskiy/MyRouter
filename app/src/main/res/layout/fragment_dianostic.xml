@@ -69,21 +69,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{deviceInfo.boardName}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="Some name"
-                    android:text="@{deviceInfo.boardName}"/>
+                    tools:text="Some name" />
 
                 <ImageView
                     android:id="@+id/diagnostic_board_name_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{deviceInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{deviceInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_board_name_pb"
@@ -117,21 +117,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{deviceInfo.currentFirmware}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="Some name"
-                    android:text="@{deviceInfo.currentFirmware}"/>
+                    tools:text="Some name" />
 
                 <ImageView
                     android:id="@+id/diagnostic_framework_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{deviceInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{deviceInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_framework_pb"
@@ -181,21 +181,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{(isLinkRun) ? `OK` : `NO`}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="True"
-                    android:text="@{isLinkRun.toString()}"/>
+                    tools:text="True" />
 
                 <ImageView
                     android:id="@+id/diagnostic_link_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{isLinkRun == true}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{isLinkRun == true}"/>
+                    tools:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/diagnostic_link_cancel_img"
@@ -238,21 +238,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{linkRate}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="100 mb"
-                    android:text="@{linkRate}"/>
+                    tools:text="100 mb" />
 
                 <ImageView
                     android:id="@+id/diagnostic_rate_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{linkRate != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{linkRate != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_rate_pb"
@@ -286,21 +286,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{isLinkCableOk ? `Broke` : `Ok`}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="OK"
-                    android:text="@{isLinkCableOk ? `Broke` : `Ok`}"/>
+                    tools:text="OK" />
 
                 <ImageView
                     android:id="@+id/diagnostic_cabel_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{isLinkCableOk == false}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{isLinkCableOk == false}"/>
+                    tools:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/diagnostic_cable_cancel_img"
@@ -361,21 +361,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{ipInfo.address}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="10.0.0.0.0"
-                    android:text="@{ipInfo.address}"/>
+                    tools:text="10.0.0.0.0" />
 
                 <ImageView
                     android:id="@+id/diagnostic_ip_address_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{ipInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{ipInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_ip_address_pb"
@@ -409,21 +409,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{ipInfo.gateway}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="10.0.0.0.0"
-                    android:text="@{ipInfo.gateway}"/>
+                    tools:text="10.0.0.0.0" />
 
                 <ImageView
                     android:id="@+id/diagnostic_gateway_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{ipInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{ipInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_gateway_pb"
@@ -456,21 +456,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{ipInfo.dns1}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="OK"
-                    android:text="@{ipInfo.dns1}"/>
+                    tools:text="OK" />
 
                 <ImageView
                     android:id="@+id/diagnostic_dns_one_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{ipInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{ipInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_dns_one_pb"
@@ -503,21 +503,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{ipInfo.dns2}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="OK"
-                    android:text="@{ipInfo.dns2}"/>
+                    tools:text="OK" />
 
                 <ImageView
                     android:id="@+id/diagnostic_dns_two_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{ipInfo != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{ipInfo != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_dns_two_pb"
@@ -550,21 +550,21 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:textAlignment="textEnd"
+                    android:text="@{ipStatus}"
+                    android:textAlignment="viewStart"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    tools:text="OK"
-                    android:text="@{ipStatus}"/>
+                    tools:text="OK" />
 
                 <ImageView
                     android:id="@+id/diagnostic_status_done_img"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:visibility="gone"
+                    app:goneUnless="@{ipStatus != null}"
                     app:srcCompat="@drawable/ic_baseline_done_24"
                     app:tint="@android:color/holo_green_light"
-                    tools:visibility="visible"
-                    app:goneUnless="@{ipStatus != null}"/>
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/diagnostic_status_pb"
