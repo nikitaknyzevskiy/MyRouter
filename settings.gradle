@@ -1,2 +1,5 @@
 include ':app'
+include ':androidME'
+
 rootProject.name = "MyRouter"
+project(':androidME').projectDir = new File('../AndroidME/androidME')

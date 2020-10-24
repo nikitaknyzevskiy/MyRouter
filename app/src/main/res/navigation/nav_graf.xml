@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graf"
-    app:startDestination="@id/myRouterFragment">
+    app:startDestination="@id/userListFragment">
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.rokobit.myrouter.screen.LoginFragment"
-        android:label="LoginFragment">
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_menuFragment"
-            app:destination="@id/menuFragment" />
+            android:id="@+id/action_login_to_myRouter"
+            app:destination="@id/myRouterFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/menuFragment"
         android:name="com.rokobit.myrouter.screen.MenuFragment"
@@ -20,25 +23,27 @@
             android:id="@+id/action_menuFragment_to_commandFragment"
             app:destination="@id/commandFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/myRouterFragment"
+        android:name="com.rokobit.myrouter.screen.MyRouterFragment"
+        android:label="@string/connect"
+        tools:layout="@layout/fragment_my_router">
+        <action
+            android:id="@+id/action_myRouterFragment_to_diagnosticFragment"
+            app:destination="@id/diagnosticFragment"
+            app:popUpTo="@id/userListFragment"/>
+    </fragment>
+
     <fragment
         android:id="@+id/commandFragment"
         android:name="com.rokobit.myrouter.screen.CommandFragment"
         android:label="CommandFragment" />
-    <fragment
-        android:id="@+id/myRouterFragment"
-        android:name="com.rokobit.myrouter.screen.MyRouterFragment"
-        android:label="MyRouterFragment">
-        <action
-            android:id="@+id/action_myRouterFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_myRouterFragment_to_diagnosticFragment"
-            app:destination="@id/diagnosticFragment" />
-    </fragment>
+
     <fragment
         android:id="@+id/diagnosticFragment"
         android:name="com.rokobit.myrouter.screen.DiagnosticFragment"
-        android:label="DiagnosticFragment" >
+        android:label="DiagnosticFragment">
         <action
             android:id="@+id/action_diagnosticFragment_to_speedInfoFragment"
             app:destination="@id/speedInfoFragment" />
@@ -47,4 +52,13 @@
         android:id="@+id/speedInfoFragment"
         android:name="com.rokobit.myrouter.screen.SpeedInfoFragment"
         android:label="SpeedInfoFragment" />
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.rokobit.myrouter.screen.UserListFragment"
+        android:label="@string/host_list"
+        tools:layout="@layout/screen_user_list">
+        <action
+            android:id="@+id/action_userList_to_login"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>

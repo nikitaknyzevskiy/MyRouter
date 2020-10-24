@@ -5,4 +5,11 @@
     <string name="connecting">Connecting</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="speed_test_host">Speed test host</string>
+    <string name="add_new">Add new</string>
+    <string name="host_list">Host list</string>
 </resources>
