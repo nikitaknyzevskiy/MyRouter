@@ -19,12 +19,19 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.*
 
+enum class SpeedProtocolType(val data: String) {
+    UDP("udp"),
+    TCP("tcp")
+}
+
 open class CommandsViewModel : ViewModel() {
     private val userDao = myDatabase.userDao()
 
     val connectionStatus = MutableLiveData<Boolean>(false)
 
     private var userEntity: UserEntity? = null
+
+    var speedProtocolType = SpeedProtocolType.UDP
 
     val deviceInfoLiveData = liveData(Dispatchers.IO) {
         val data = doCommand("/system routerboard print")
@@ -103,7 +110,7 @@ open class CommandsViewModel : ViewModel() {
         speedSshChanel = session?.openChannel("exec") as ChannelExec
         speedSshChanel?.outputStream = stream
 
-        speedSshChanel?.setCommand("/tool bandwidth-test address=${userEntity?.speedIP} direction=" + if (isDownload) "receive" else "transmit")
+        speedSshChanel?.setCommand("/tool bandwidth-test address=${userEntity?.speedIP} protocol=${speedProtocolType.data} direction=" + if (isDownload) "receive" else "transmit")
         speedSshChanel?.connect()
 
         while (isSpeedRun) {

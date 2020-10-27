@@ -16,6 +16,7 @@ import com.rokobit.myrouter.data.IpInfo
 import com.rokobit.myrouter.data.RouterInfo
 import com.rokobit.myrouter.databinding.FragmentDianosticBinding
 import com.rokobit.myrouter.viewmodel.MainViewModel
+import com.rokobit.myrouter.viewmodel.SpeedProtocolType
 import kotlinx.android.synthetic.main.fragment_dianostic.*
 
 class DiagnosticFragment : Fragment() {
@@ -49,6 +50,17 @@ class DiagnosticFragment : Fragment() {
                 putBoolean("isDownload", false)
             })
         }
+
+        diagnostic_speed_radiobtn_udp.setOnCheckedChangeListener { _, isSelected ->
+            if (isSelected)
+                mViewModel.speedProtocolType = SpeedProtocolType.UDP
+        }
+
+        diagnostic_speed_radiobtn_tcp.setOnCheckedChangeListener { _, isSelected ->
+            if (isSelected)
+                mViewModel.speedProtocolType = SpeedProtocolType.TCP
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
