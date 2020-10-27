@@ -62,7 +62,7 @@ class LoginFragment : Fragment() {
     private val userSaveObs = Observer<Long> {id ->
         binding.isLoading = false
         findNavController().navigate(R.id.action_login_to_myRouter, Bundle().apply {
-            putLong("user_id", userID)
+            putLong("user_id", id)
         })
     }
 
