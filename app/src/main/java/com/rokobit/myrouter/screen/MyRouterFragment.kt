@@ -59,11 +59,6 @@ class MyRouterFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mViewModel.connectionStatus.observe(this.viewLifecycleOwner, Observer {
-
-
-
-        })
     }
 
 }

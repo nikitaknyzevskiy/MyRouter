@@ -12,4 +12,5 @@
     <string name="speed_test_host">Speed test host</string>
     <string name="add_new">Add new</string>
     <string name="host_list">Host list</string>
+    <string name="refresh">Refresh</string>
 </resources>

@@ -62,6 +62,12 @@ data class RouterInfo(
     var isEther1CableRun: Boolean? = null
 )
 
+data class CableInfo(
+    val name: String,
+    val status: String,
+    val cablePairs: String
+)
+
 object RouterInfoUtil {
 
     fun convertToDeviceInfo(data: String): DeviceInfo {

@@ -42,44 +42,54 @@ class SpeedInfoFragment : Fragment() {
         else {
             speedinfo_title.text = "Upload"
         }
+
+        view.setOnClickListener {
+            mViewModel.closeSpeedTest()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        mViewModel.downloadSpeedInfoLiveData.observe(this.viewLifecycleOwner, downObs)
-        mViewModel.uploadSpeedInfoLiveData.observe(this.viewLifecycleOwner, uplObs)
+
+        mViewModel.uploadLiveData.observe(this.viewLifecycleOwner, uplObs)
+        mViewModel.downloadLiveData.observe(this.viewLifecycleOwner, downObs)
 
         mViewModel.startSpeedTest(arguments?.getBoolean("isDownload")?:false)
+
     }
 
     override fun onStop() {
+        mViewModel.uploadLiveData.removeObserver(uplObs)
+        mViewModel.downloadLiveData.removeObserver(downObs)
+        mViewModel.closeSpeedTest()
         super.onStop()
-        mViewModel.stopSpeedViaClose()
     }
 
     @SuppressLint("SetTextI18n")
-    private val downObs = Observer<DownloadSpeedInfo> {
+    private val downObs = Observer<DownloadSpeedInfo?> {
+        if (it == null) return@Observer
         speed_duraction.text = "${it.duration.toNumber()} s"
         speed_local_cpu.text = "${it.localCpu.toNumber()}%"
         speed_remote_cpu.text = "${it.remoteCpu.toNumber()}%"
 
         val speed = it.rxTotalAverage.toNumber()
 
-        speed_speed.text = "$speed Mbps"
+        speed_speed.text = "${it.rxCurrent.toNumber()} Mbps"
         speed_average.text = "$speed Mbps"
-        speed_progress.progress = speed
+        speed_progress.progress = it.rxCurrent.toNumber()
     }
 
-    private val uplObs = Observer<UploadSpeedInfo> {
+    private val uplObs = Observer<UploadSpeedInfo?> {
+        if (it == null) return@Observer
         speed_duraction.text = "${it.duration.toNumber()} s"
         speed_local_cpu.text = "${it.localCpu.toNumber()}%"
         speed_remote_cpu.text = "${it.remoteCpu.toNumber()}%"
 
         val speed = it.txTotalAverage.toNumber()
 
-        speed_speed.text = "$speed Mbps"
+        speed_speed.text = "${it.txCurrent.toNumber()} Mbps"
         speed_average.text = "$speed Mbps"
-        speed_progress.progress = speed
+        speed_progress.progress = it.txCurrent.toNumber()
     }
 
 

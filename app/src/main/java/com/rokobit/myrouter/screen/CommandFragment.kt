@@ -27,11 +27,6 @@ class CommandFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mViewModel.sendCommand(arguments?.getString("main_command", "clear")!!)
-            .observe(this.viewLifecycleOwner, Observer {
-                command_logs.text = it
-                command_pb.visibility = View.GONE
-            })
     }
 
 }

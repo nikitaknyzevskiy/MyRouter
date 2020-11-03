@@ -1,6 +1,7 @@
 package com.rokobit.myrouter.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -12,6 +13,8 @@ import com.rokobit.myrouter.data.RouterInfoUtil
 import com.rokobit.myrouter.data.UploadSpeedInfo
 import com.rokobit.myrouter.data.entity.UserEntity
 import com.rokobit.myrouter.myDatabase
+import com.rokobit.myrouter.repository.DeviceInfoRepository
+import com.rokobit.myrouter.repository.SpeedInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,122 +28,59 @@ enum class SpeedProtocolType(val data: String) {
 }
 
 open class CommandsViewModel : ViewModel() {
-    private val userDao = myDatabase.userDao()
 
-    val connectionStatus = MutableLiveData<Boolean>(false)
+    private var session: Session? = null
+
+    private val deviceInfoRepository = DeviceInfoRepository {
+        session
+    }
+
+    private val speedInfoRepository = SpeedInfoRepository {
+        session
+    }
+
+    private val userDao = myDatabase.userDao()
 
     private var userEntity: UserEntity? = null
 
     var speedProtocolType = SpeedProtocolType.UDP
 
-    val deviceInfoLiveData = liveData(Dispatchers.IO) {
-        val data = doCommand("/system routerboard print")
-        val convertToDeviceInfo = RouterInfoUtil.convertToDeviceInfo(data)
-        emit(convertToDeviceInfo)
-    }
-    val isLinkRunLiveData = liveData(Dispatchers.IO) {
-        emit(
-            doCommand(":put [/interface ethernet get ether1 running]").contains("true")
-        )
-    }
-    val rateLinkLiveData = liveData(Dispatchers.IO) {
-        emit(
-            doCommand(":put [/interface ethernet get ether1 speed]").replace("\n", "")
-        )
-    }
-    val isLinkCableOkLiveData = liveData(Dispatchers.IO) {
-        emit(
-            doCommand("/interface ethernet cable-test ether1").contains("true")
-        )
-    }
-    val ipStateLiveData = liveData(Dispatchers.IO) {
-        emit(
-            doCommand(":put [/interface detect-internet state get ether1 state]").replace("\n", "")
-        )
-    }
-    val ipInfoLiveData = liveData(Dispatchers.IO) {
-        emit(
-            RouterInfoUtil.convertToIpInfo(doCommand("ip dhcp-client print detail"))
-        )
-    }
+    val uploadLiveData = MutableLiveData<UploadSpeedInfo?>()
 
-    val downloadSpeedInfoLiveData = MutableLiveData<DownloadSpeedInfo>()
-    val uploadSpeedInfoLiveData = MutableLiveData<UploadSpeedInfo>()
+    val downloadLiveData = MutableLiveData<DownloadSpeedInfo?>()
 
-    private var session: Session? = null
+    fun deviceInfo() = deviceInfoRepository.deviceInfo()
 
-    private var speedSshChanel: ChannelExec? = null
+    fun isLinkRun() = deviceInfoRepository.isLinkRun()
 
-    fun sendCommand(command: String) = liveData(Dispatchers.IO) {
-        val result = doCommand(command)
-        emit(result)
-    }
+    fun rateLink() = deviceInfoRepository.rateLink()
 
-    @Synchronized
-    private suspend fun doCommand(command: String): String {
-        val outputStream = ByteArrayOutputStream()
-        Log.d("MainViewModel", "onCommand $command")
+    fun isLinkCableOk() = deviceInfoRepository.isLinkCableOk()
 
-        // Create SSH Channel.
-        val sshChannel = session?.openChannel("exec") as ChannelExec
-        sshChannel?.outputStream = outputStream
+    fun ipState() = deviceInfoRepository.ipState()
 
-        sshChannel?.setCommand(command)
-        sshChannel?.connect()
+    fun ipInfo() = deviceInfoRepository.ipInfo()
 
-        while (outputStream.size() == 0)
-            delay(100)
+    fun frameWorkVersion() = deviceInfoRepository.frameworkVersion()
 
-        Log.d("MainViewModel", "command $command result ${outputStream.toString()}")
-
-        sshChannel?.disconnect()
-
-        return outputStream.toString()
-    }
-
-    private var isSpeedRun = false
-
-    fun startSpeedTest(isDownload: Boolean) = GlobalScope.launch(Dispatchers.IO) {
-        val stream = ByteArrayOutputStream()
-
-        isSpeedRun = true
-
-        // Create SSH Channel.
-        speedSshChanel?.disconnect()
-        speedSshChanel = session?.openChannel("exec") as ChannelExec
-        speedSshChanel?.outputStream = stream
-
-        speedSshChanel?.setCommand("/tool bandwidth-test address=${userEntity?.speedIP} protocol=${speedProtocolType.data} direction=" + if (isDownload) "receive" else "transmit")
-        speedSshChanel?.connect()
-
-        while (isSpeedRun) {
-            if (stream.size() == 0)
-                continue
-            delay(100)
-
-            if (isDownload)
-                downloadSpeedInfoLiveData.postValue(
-                    RouterInfoUtil.convertToDownloadSpeedInfo(stream.toString())
-                )
-            else
-                uploadSpeedInfoLiveData.postValue(
-                    RouterInfoUtil.convertToUploadSpeedInfo(stream.toString())
-                )
-
-            stream.reset()
+    fun startSpeedTest(isDownload: Boolean) {
+        if (isDownload) {
+            speedInfoRepository.startDownload(
+                userEntity?:return,
+                speedProtocolType,
+                downloadLiveData
+            )
+        }
+        else {
+            speedInfoRepository.startUpload(
+                userEntity?:return,
+                speedProtocolType,
+                uploadLiveData
+            )
         }
     }
 
-    fun stopSpeedViaQ() = GlobalScope.launch(Dispatchers.IO) {
-        isSpeedRun = false
-        speedSshChanel?.setCommand("Q")
-        speedSshChanel?.connect()
-    }
-
-    fun stopSpeedViaClose() = GlobalScope.launch(Dispatchers.IO) {
-        isSpeedRun = false
-        speedSshChanel?.disconnect()
-    }
+    fun closeSpeedTest() = speedInfoRepository.stop()
 
     fun openConnection(userID: Long) = liveData(Dispatchers.IO) {
         userEntity = userDao.user(userID)
@@ -167,7 +107,6 @@ open class CommandsViewModel : ViewModel() {
             session?.connect()
         } catch (e: Exception) {
             Log.e("MainViewModel", "error login", e)
-            connectionStatus.postValue(false)
             emit(false)
             return@liveData
         }
@@ -175,8 +114,6 @@ open class CommandsViewModel : ViewModel() {
         delay(100)
 
         delay(100)
-
-        connectionStatus.postValue(true)
 
         emit(true)
     }
