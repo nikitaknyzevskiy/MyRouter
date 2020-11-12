@@ -70,7 +70,7 @@ class DeviceInfoRepository(private val onSession: () -> Session?) {
         val data = CableInfo(
             name = output.value("name")?:"",
             status = output.value("status")?:"",
-            cablePairs = output.value("cable-pairs")?:""
+            cablePairs = (output.value("cable-pairs")?:"").replace(",", "\n")
         )
 
         sshChannel.disconnect()

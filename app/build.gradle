@@ -18,7 +18,7 @@ android {
         applicationId "com.rokobit.myrouter"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 6
+        versionCode 11
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
